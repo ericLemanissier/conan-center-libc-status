@@ -23,7 +23,7 @@ do
           do
             symbol=$(echo $symbol | cut -d '@' -f 1)
             pattern="[a-zA-Z0-9_]*__[a-zA-Z0-9_]+_finite"
-            pattern+="|_dn_comp"
+            pattern+="|__dn_comp"
             pattern+="|__dn_expand"
             pattern+="|__dn_skipname"
             pattern+="|__res_dnok"
@@ -42,6 +42,7 @@ do
             pattern+="|__res_send"
             pattern+="|__xmknod"
             pattern+="|__xmknodat"
+            pattern+="|__vtimes|__ftime"
             if [[ "$symbol" =~ ^($pattern)$ ]]
             then
               missing_symbols+="$symbol,"

@@ -18,6 +18,10 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    name: Build with prefix ${{ matrix.prefix }}
+    strategy:
+      matrix: 
+        prefix: ['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:    
@@ -38,4 +42,4 @@ jobs:
         
       - name: Scan libc symbols
         working-directory: conan-center-index/recipes
-        run: ../../scan.sh
+        run: ../../scan.sh ${{ matrix.prefix }}

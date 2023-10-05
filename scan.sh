@@ -1,5 +1,5 @@
 #!/bin/bash
-for p in *
+for p in $1*
 do
   for v in $(yq -r '.versions | keys[]' $p/config.yml)
   do

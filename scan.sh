@@ -20,26 +20,27 @@ do
           for symbol in $(readelf -Ws $f |  awk '{ if ($7 == "UND") { print $8} }')
           do
             symbol=$(echo $symbol | cut -d '@' -f 1)
-            if [[ "$symbol" =~ (?x)^([a-zA-Z0-9_]*__[a-zA-Z0-9_]+_finite|
-              _dn_comp|
-              __dn_expand|
-              __dn_skipname|
-              __res_dnok|
-              __res_hnok|
-              __res_mailok|
-              __res_mkquery|
-              __res_nmkquery|
-              __res_nquery|
-              __res_nquerydomain|
-              __res_nsearch|
-              __res_nsend|
-              __res_ownok|
-              __res_query|
-              __res_querydomain|
-              __res_search|
-              __res_send|
-              __xmknod|
-              __xmknodat)$ ]]
+            pattern="[a-zA-Z0-9_]*__[a-zA-Z0-9_]+_finite"
+            pattern+="|_dn_comp"
+            pattern+="|__dn_expand"
+            pattern+="|__dn_skipname"
+            pattern+="|__res_dnok"
+            pattern+="|__res_hnok"
+            pattern+="|__res_mailok"
+            pattern+="|__res_mkquery"
+            pattern+="|__res_nmkquery"
+            pattern+="|__res_nquery"
+            pattern+="|__res_nquerydomain"
+            pattern+="|__res_nsearch"
+            pattern+="|__res_nsend"
+            pattern+="|__res_ownok"
+            pattern+="|__res_query"
+            pattern+="|__res_querydomain"
+            pattern+="|__res_search"
+            pattern+="|__res_send"
+            pattern+="|__xmknod"
+            pattern+="|__xmknodat"
+            if [[ "$symbol" =~ ^($pattern)$ ]]
             then
               echo "::error ::$p/$v $symbol in $f not present in new libc versions"
             fi

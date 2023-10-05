@@ -41,8 +41,7 @@ do
               __xmknod|
               __xmknodat)$ ]]
             then
-              echo $symbol in $f in $p/$v
-              echo "::error ::$symbol in $f in $p/$v"
+              echo "::error ::$p/$v $symbol in $f not present in new libc versions"
             fi
           done
         fi

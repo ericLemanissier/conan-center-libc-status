@@ -13,10 +13,12 @@ do
     conan download "$p/$v:*" -r conancenter -p "$filter" --format=json >pkglist.json
     for r in $(yq -r '."Local Cache" | keys[] as $pv | .[$pv].revisions | keys[] as $r | .[$r].packages | keys[] as $p | "\($pv)#\($r):\($p)"' pkglist.json)
     do
+      offending_libs=""
       for f in $(conan cache path $r)/lib/*.so*
       do
         if [[ -f $f && ! -L $f ]]
         then
+          missing_symbols=""
           for symbol in $(readelf -Ws $f |  awk '{ if ($7 == "UND") { print $8} }')
           do
             symbol=$(echo $symbol | cut -d '@' -f 1)
@@ -42,11 +44,19 @@ do
             pattern+="|__xmknodat"
             if [[ "$symbol" =~ ^($pattern)$ ]]
             then
-              echo "::error ::$p/$v $symbol in $f not present in new libc versions"
+              missing_symbols+="$symbol,"
             fi
           done
+          if [[ ! -z "$missing_symbols" ]]
+          then
+            offending_libs+="$f(${missing_symbols::-1}), "
+          fi
         fi
       done
+      if [[ ! -z "$offending_libs" ]]
+      then
+        echo "::error ::$p/$v symbols not present in new libc versions: ${offending_libs::-2}"
+      fi
       conan remove -c $r >/dev/null
     done
     conan remove -c "$p/$v" >/dev/null

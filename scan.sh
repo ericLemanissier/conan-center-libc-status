@@ -1,7 +1,15 @@
 #!/bin/bash
 for p in $1*
 do
-  for v in $(yq -r '.versions | keys[]' $p/config.yml)
+  versions_list=($(yq -r '.versions | keys[]' $p/config.yml))
+  if [[ ${#versions_list[@]} == 1 ]]
+  then
+    versions_list=("${versions_list[0]}")
+  else
+    versions_list=("${versions_list[0]}" "${versions_list[-1]}")
+  fi
+
+  for v in "${versions_list[@]}"
   do
     recipe_path=$(yq -r .versions.\"$v\".folder $p/config.yml)
     has_shared=$(conan inspect --format=json $p/$recipe_path | yq '.options | has("shared")')

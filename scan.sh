@@ -22,7 +22,7 @@ do
     for r in $(yq -r '."Local Cache" | keys[] as $pv | .[$pv].revisions | keys[] as $r | .[$r].packages | keys[] as $p | "\($pv)#\($r):\($p)"' pkglist.json)
     do
       offending_libs=""
-      for f in $(conan cache path $r)/lib/*.so*
+      for f in $(find $(conan cache path $r) | xargs -L1 file | grep 'ELF 64-bit' | grep 'x86-64' | cut -d ':' -f 1)
       do
         if [[ -f $f && ! -L $f ]]
         then

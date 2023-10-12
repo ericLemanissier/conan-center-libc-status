@@ -11,6 +11,7 @@ do
 
   for v in "${versions_list[@]}"
   do
+    export CONAN_HOME=$(mktemp -d -p $PWD)
     recipe_path=$(yq -r .versions.\"$v\".folder $p/config.yml)
     has_shared=$(conan inspect --format=json $p/$recipe_path | yq '.options | has("shared")')
     filter="os=Linux"
@@ -66,8 +67,10 @@ do
       then
         echo "::error ::$p/$v symbols not present in new libc versions: ${offending_libs::-2}"
       fi
-      conan remove -c $r >/dev/null
+      #conan remove -c $r >/dev/null
     done
-    conan remove -c "$p/$v" >/dev/null
+    #conan remove -c "$p/$v" >/dev/null
+    rm -rf $CONAN_HOME &
   done
 done
+wait

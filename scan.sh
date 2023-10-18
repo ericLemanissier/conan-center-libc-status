@@ -49,8 +49,8 @@ do
             pattern+="|__res_querydomain"
             pattern+="|__res_search"
             pattern+="|__res_send"
-            pattern+="|__xmknod"
-            pattern+="|__xmknodat"
+            #pattern+="|__xmknod"
+            #pattern+="|__xmknodat"
             pattern+="|__vtimes|__ftime"
             if [[ "$symbol" =~ ^($pattern)$ ]]
             then
